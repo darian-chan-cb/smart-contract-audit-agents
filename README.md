@@ -49,13 +49,13 @@ Use the agents in this recommended order:
 | Agent | Purpose | Model |
 |-------|---------|-------|
 | `context-builder` | Build architectural understanding before auditing | opus |
-| `entry-point-mapper` | Map all external functions and attack surface | sonnet |
-| `static-analyzer` | Run Slither/Semgrep and interpret results | sonnet |
+| `entry-point-mapper` | Map all external functions and attack surface | opus |
+| `static-analyzer` | Run Slither/Semgrep and interpret results | opus |
 | `access-control-reviewer` | Deep dive into RBAC and permissions | opus |
 | `upgrade-safety-reviewer` | Audit proxy patterns and storage safety | opus |
 | `smart-contract-auditor` | Manual vulnerability hunting | opus |
 | `finding-triager` | Validate findings, detect false positives | opus |
-| `report-generator` | Compile findings into professional report | sonnet |
+| `report-generator` | Compile findings into professional report | opus |
 
 ## Included Skills (Trail of Bits)
 
