@@ -1,0 +1,21 @@
+# Claude local settings (user-specific)
+.claude/settings.local.json
+
+# Audit outputs (may contain sensitive findings)
+SECURITY_AUDIT_REPORT.md
+*_AUDIT_*.md
+slither-output.json
+slither-results.txt
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
