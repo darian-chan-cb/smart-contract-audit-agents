@@ -1,23 +1,25 @@
 # Smart Contract Security Audit Agents
 
-A collection of Claude agents and Trail of Bits skills for conducting comprehensive smart contract security audits.
+A comprehensive Claude Code multi-agent system for conducting maximum-coverage smart contract security audits. Designed to approach 100% bug detection through parallel agent execution, adversarial validation, and dynamic agent spawning.
 
 ## Overview
 
-This toolkit provides a systematic approach to smart contract security auditing, combining:
+This toolkit provides an autonomous, multi-agent approach to smart contract security auditing:
 
-- **8 Specialized Agents** for different phases of security analysis
-- **10+ Trail of Bits Skills** for vulnerability detection across multiple blockchain platforms
-- **Structured Workflow** from context building to report generation
+- **25 Specialized Agents** covering all vulnerability classes
+- **8-Phase Autonomous Pipeline** with parallel execution
+- **Dynamic Agent Spawning** for novel vulnerability patterns
+- **Consensus Mechanism** for multi-agent finding validation
+- **Coverage Verification** ensuring no blind spots
+- **10+ Trail of Bits Skills** for platform-specific analysis
 
 ## Quick Start
 
 ### 1. Copy to Your Project
 
-Copy the `.claude` folder to the root of your smart contract project:
-
 ```bash
 cp -r /path/to/smart-contract-audit-agents/.claude /path/to/your-project/
+cp /path/to/smart-contract-audit-agents/CLAUDE.md /path/to/your-project/
 ```
 
 ### 2. Install Prerequisites
@@ -26,167 +28,286 @@ cp -r /path/to/smart-contract-audit-agents/.claude /path/to/your-project/
 # Slither (static analysis)
 pip install slither-analyzer
 
-# Foundry (for testing)
+# Foundry (for testing and PoC)
 curl -L https://foundry.paradigm.xyz | bash
 foundryup
+
+# Semgrep (optional)
+pip install semgrep
 ```
 
-### 3. Start Your Audit
+### 3. Run Autonomous Audit
 
-Use the agents in this recommended order:
+Single command to run complete audit:
 
-1. **context-builder** - Build deep understanding of the codebase
-2. **entry-point-mapper** - Map all attack surfaces
-3. **static-analyzer** - Run automated tools
-4. **access-control-reviewer** - Audit roles and permissions
-5. **upgrade-safety-reviewer** - Check proxy/upgrade patterns
-6. **smart-contract-auditor** - Deep manual vulnerability hunting
-7. **finding-triager** - Validate findings, eliminate false positives
-8. **report-generator** - Create professional audit report
+```
+@audit-orchestrator Perform comprehensive security audit of all Solidity contracts in ./contracts/
+```
 
-## Agents
+The orchestrator will:
+1. Automatically invoke all 23 agents in correct sequence
+2. Run agents in parallel where possible (up to 8 concurrent)
+3. Handle inter-agent communication via `.audit/` directory
+4. Iterate up to 5 times if coverage gaps found
+5. Spawn dynamic agents for novel vulnerability patterns
+6. Generate final report with all validated findings
 
-| Agent | Purpose | Model |
-|-------|---------|-------|
-| `context-builder` | Build architectural understanding before auditing | opus |
-| `entry-point-mapper` | Map all external functions and attack surface | opus |
-| `static-analyzer` | Run Slither/Semgrep and interpret results | opus |
-| `access-control-reviewer` | Deep dive into RBAC and permissions | opus |
-| `upgrade-safety-reviewer` | Audit proxy patterns and storage safety | opus |
-| `smart-contract-auditor` | Manual vulnerability hunting | opus |
-| `finding-triager` | Validate findings, detect false positives | opus |
-| `report-generator` | Compile findings into professional report | opus |
+## Agent Inventory
 
-## Included Skills (Trail of Bits)
+### Core Analysis Agents (9)
+| Agent | Purpose |
+|-------|---------|
+| `@context-builder` | Architecture mapping and trust boundaries |
+| `@entry-point-mapper` | Attack surface identification |
+| `@static-analyzer` | Slither/Semgrep automated scanning |
+| `@access-control-reviewer` | RBAC and permission analysis |
+| `@upgrade-safety-reviewer` | Proxy and storage safety |
+| `@smart-contract-auditor` | First-principles vulnerability hunting (novel bugs) |
+| `@solidity-quirks-analyst` | Token quirks, arithmetic, gas/DoS, language pitfalls |
+| `@finding-triager` | False positive elimination |
+| `@report-generator` | Professional report compilation |
+
+### Specialized Gap Coverage Agents (8)
+| Agent | Purpose |
+|-------|---------|
+| `@l2-rollup-reviewer` | L2/rollup specific vulnerabilities (sequencer, bridges) |
+| `@mev-ordering-analyst` | Front-running, sandwich attacks, MEV vectors |
+| `@crypto-analyst` | Signature, hash, randomness vulnerabilities |
+| `@economic-attack-modeler` | Flash loans, game theory, incentive attacks |
+| `@formal-verifier` | Invariant extraction, Certora/Halmos integration |
+| `@oracle-analyst` | Price feed manipulation, staleness, Chainlink |
+| `@cross-contract-analyst` | Reentrancy, callbacks, composability risks |
+| `@external-integration-analyst` | External protocol quirks (EAS, Uniswap, Aave, Lido, LayerZero) |
+
+### Adversarial Agents (3)
+| Agent | Purpose |
+|-------|---------|
+| `@red-team-attacker` | Offensive attack construction from attacker perspective |
+| `@devils-advocate` | Challenge findings, prove false positives |
+| `@historical-exploit-comparator` | Pattern match against 500+ historical exploits |
+
+### Coordination Agents (5)
+| Agent | Purpose |
+|-------|---------|
+| `@audit-orchestrator` | Master autonomous pipeline controller |
+| `@anomaly-detector` | Detect unknown patterns, trigger dynamic spawning |
+| `@consensus-aggregator` | Multi-agent finding aggregation and conflict resolution |
+| `@coverage-gap-analyzer` | Verify complete coverage, identify blind spots |
+| `@_dynamic-specialist-template` | Template for runtime agent spawning |
+
+## Autonomous Pipeline
+
+### 8-Phase Execution
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  SINGLE COMMAND: @audit-orchestrator "Audit contracts in /src" │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 1: Foundation (parallel)                                    │
+│   → context-builder + historical-exploit-comparator               │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 2: Attack Surface (parallel)                                │
+│   → entry-point-mapper + static-analyzer                          │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 3: Deep Analysis (8 agents in parallel)                     │
+│   → access-control, upgrade-safety, smart-contract-auditor        │
+│   → solidity-quirks, l2-rollup, mev-ordering, crypto, economic    │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 4: Specialized (5 agents in parallel)                       │
+│   → oracle, cross-contract, formal-verifier                       │
+│   → red-team-attacker, devils-advocate                            │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 5: Consensus & Validation                                   │
+│   → consensus-aggregator + finding-triager + coverage-gap         │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 6: Dynamic Agent Spawning                                   │
+│   → anomaly-detector identifies novel patterns                    │
+│   → Spawns specialized agents for unknown unknowns                │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 7: Iteration Loop                                           │
+│   → If coverage < 99%: re-run targeted agents                     │
+│   → Max 5 iterations                                              │
+└─────────────────────────────┼─────────────────────────────────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│ PHASE 8: Report Generation                                        │
+│   → report-generator compiles FINAL_REPORT.md                     │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+## Vulnerability Coverage
+
+### All Classes Explicitly Checked
+
+- **Reentrancy** - Classic, cross-function, cross-contract, read-only, callbacks
+- **Access Control** - Missing checks, role escalation, admin abuse
+- **Integer Issues** - Overflow, underflow, precision loss, rounding
+- **Oracle Manipulation** - Flash loan attacks, TWAP, staleness
+- **MEV/Front-running** - Sandwich, JIT liquidity, time-bandit
+- **Signature Issues** - Replay, malleability, missing validation
+- **Upgrade Vulnerabilities** - Storage collision, initializer, authorization
+- **Economic Attacks** - Flash loans, governance, incentive misalignment
+- **Cross-Contract** - Composability, callbacks, delegatecall
+- **L2-Specific** - Sequencer, bridges, L1-L2 messaging
+- **Cryptographic** - ECDSA, VRF, commitment schemes
+- **DoS Vectors** - Unbounded loops, gas griefing, permanent pause
+
+## Dynamic Agent Spawning
+
+For unknown vulnerabilities ("unknown unknowns"), the system can spawn specialized agents at runtime:
+
+1. `@anomaly-detector` identifies novel code patterns
+2. Classifies the pattern type (financial, governance, crypto, etc.)
+3. Generates specialized agent prompt from template
+4. Spawns dynamic agent for deep analysis
+5. Integrates findings into consensus
+
+**Example dynamic spawns:**
+- Custom bonding curve → `dynamic-bonding-curve-specialist`
+- Novel voting escrow → `dynamic-vote-escrow-specialist`
+- Custom liquidation → `dynamic-liquidation-specialist`
+
+## Consensus & Validation
+
+### Multi-Agent Agreement
+
+Findings are scored by consensus:
+- **Unanimous** (all agents): 1.0 confidence
+- **Supermajority** (2/3+): 0.85 confidence
+- **Majority**: 0.70 confidence
+- **Single specialized**: 0.60 confidence
+- **Contested**: 0.40 → requires human review
+
+### Adversarial Validation
+
+- `@devils-advocate` challenges ALL findings
+- Must survive scrutiny to be confirmed
+- Findings that survive get confidence boost (+20%)
+- Disproven findings are removed
+
+## Output Structure
+
+```
+.audit/
+├── context/
+│   ├── ARCHITECTURE.md
+│   └── HISTORICAL_PATTERNS.md
+├── surface/
+│   ├── ENTRY_POINTS.md
+│   └── STATIC_ANALYSIS.md
+├── findings/
+│   ├── access-control.md
+│   ├── upgrade-safety.md
+│   ├── manual-audit.md
+│   ├── l2-rollup.md
+│   ├── mev-ordering.md
+│   ├── crypto.md
+│   ├── economic.md
+│   ├── oracle.md
+│   ├── cross-contract.md
+│   ├── formal.md
+│   ├── red-team.md
+│   ├── devils-advocate.md
+│   └── dynamic/
+│       └── *.md
+├── consensus/
+│   ├── AGGREGATED_FINDINGS.md
+│   ├── VALIDATED_FINDINGS.md
+│   └── COVERAGE_REPORT.md
+└── FINAL_REPORT.md
+```
+
+## Manual Agent Execution
+
+For step-by-step control, invoke agents individually:
+
+```bash
+# Phase 1: Build context
+@context-builder Analyze the architecture of contracts in ./src/
+
+# Phase 2: Map attack surface
+@entry-point-mapper Identify all entry points
+
+# Phase 3: Run static analysis
+@static-analyzer Run Slither and Semgrep on the codebase
+
+# Phase 4: Deep analysis
+@smart-contract-auditor Hunt for vulnerabilities in the core contracts
+
+# ... continue through phases
+```
+
+## Trail of Bits Skills
 
 ### Vulnerability Scanners
-- **Algorand** - TEAL/PyTeal vulnerability patterns
-- **Cairo** - StarkNet smart contract issues
-- **Cosmos** - Cosmos SDK module vulnerabilities
+- **Algorand** - TEAL/PyTeal patterns
+- **Cairo** - StarkNet issues
+- **Cosmos** - Cosmos SDK vulnerabilities
 - **Solana** - Anchor/native program issues
-- **Substrate** - Pallet security patterns
+- **Substrate** - Pallet security
 - **TON** - FunC/Tact vulnerabilities
 
-### Development Guidelines
-- **audit-prep-assistant** - Prepare for security reviews
-- **code-maturity-assessor** - Evaluate code quality
-- **guidelines-advisor** - Development best practices
-- **secure-workflow-guide** - Continuous security workflow
-- **token-integration-analyzer** - Token security analysis
-
-### Other Skills
-- **entry-point-analyzer** - Systematic attack surface mapping
-- **audit-context-building** - Ultra-granular code analysis
+### Analysis Skills
+- **entry-point-analyzer** - Attack surface mapping
+- **audit-context-building** - Ultra-granular analysis
 - **property-based-testing** - Fuzz testing guidance
-- **differential-review** - Review code changes securely
-- **static-analysis** - CodeQL and Semgrep integration
-- **variant-analysis** - Find similar vulnerabilities
+- **differential-review** - Change review
+- **static-analysis** - CodeQL/Semgrep integration
+- **variant-analysis** - Similar vulnerability discovery
 
-## Audit Workflow
+## Configuration
 
-### Phase 1: Context Building
-```
-Use @context-builder to:
-- Map contract inheritance
-- Identify trust boundaries
-- Document external dependencies
-- List critical invariants
-```
-
-### Phase 2: Attack Surface Mapping
-```
-Use @entry-point-mapper to:
-- List all external/public functions
-- Categorize by access level
-- Prioritize by risk
-- Create attack surface diagram
-```
-
-### Phase 3: Automated Analysis
-```
-Use @static-analyzer to:
-- Run Slither
-- Interpret findings
-- Separate true positives from false positives
-- Queue issues for manual review
-```
-
-### Phase 4: Specialized Reviews
-```
-Use @access-control-reviewer for:
-- Role permission matrix
-- Privilege escalation paths
-- Missing access controls
-
-Use @upgrade-safety-reviewer for:
-- Proxy pattern analysis
-- Storage collision risks
-- Initializer safety
-```
-
-### Phase 5: Deep Manual Review
-```
-Use @smart-contract-auditor to:
-- Hunt for vulnerabilities
-- Build attack narratives
-- Write proof-of-concept exploits
-```
-
-### Phase 6: Finding Validation
-```
-Use @finding-triager to:
-- Verify each finding in code
-- Eliminate false positives
-- Reassess severity
-- Provide recommendations
-```
-
-### Phase 7: Report Generation
-```
-Use @report-generator to:
-- Compile all findings
-- Create executive summary
-- Generate professional report
-```
-
-## Customization
-
-### Adding Protocol-Specific Checks
-
-Edit `smart-contract-auditor.md` to add protocol-specific vulnerability patterns:
-
-```markdown
-### 10. Protocol-Specific Patterns
-For [Your Protocol]:
-- [ ] Custom check 1
-- [ ] Custom check 2
-```
-
-### Adjusting Model Selection
-
-Each agent specifies its model in the frontmatter:
-
-```yaml
----
-model: opus  # or sonnet for faster/cheaper analysis
----
-```
+See `CLAUDE.md` for detailed configuration options including:
+- Coverage thresholds
+- Confidence scoring
+- Iteration limits
+- Quality gates
 
 ## File Structure
 
 ```
 .claude/
 ├── agents/
-│   ├── access-control-reviewer.md
+│   ├── audit-orchestrator.md      # Master controller
+│   ├── anomaly-detector.md        # Novel pattern detection
+│   ├── _dynamic-specialist-template.md
 │   ├── context-builder.md
 │   ├── entry-point-mapper.md
-│   ├── finding-triager.md
-│   ├── report-generator.md
-│   ├── smart-contract-auditor.md
 │   ├── static-analyzer.md
-│   └── upgrade-safety-reviewer.md
+│   ├── access-control-reviewer.md
+│   ├── upgrade-safety-reviewer.md
+│   ├── smart-contract-auditor.md
+│   ├── solidity-quirks-analyst.md
+│   ├── l2-rollup-reviewer.md
+│   ├── mev-ordering-analyst.md
+│   ├── crypto-analyst.md
+│   ├── economic-attack-modeler.md
+│   ├── formal-verifier.md
+│   ├── oracle-analyst.md
+│   ├── cross-contract-analyst.md
+│   ├── external-integration-analyst.md
+│   ├── red-team-attacker.md
+│   ├── devils-advocate.md
+│   ├── historical-exploit-comparator.md
+│   ├── consensus-aggregator.md
+│   ├── coverage-gap-analyzer.md
+│   ├── finding-triager.md
+│   └── report-generator.md
 └── plugins/
-    ├── ask-questions-if-underspecified/
     ├── audit-context-building/
     ├── building-secure-contracts/
     ├── differential-review/
@@ -200,11 +321,11 @@ model: opus  # or sonnet for faster/cheaper analysis
 
 ## Credits
 
-- **Trail of Bits** - Building Secure Contracts framework and skills
+- **Trail of Bits** - Building Secure Contracts framework
 - **Slither** - Static analysis for Solidity
 - **OpenZeppelin** - Security patterns and contracts
+- **Rekt Database** - Historical exploit patterns
 
 ## License
 
-MIT License - Feel free to use and modify for your security audits.
-
+MIT License - Use and modify freely for security audits.
