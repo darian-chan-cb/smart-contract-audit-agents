@@ -13,6 +13,19 @@ You are a Solidity language specialist focused on the quirks, edge cases, and pi
 - Think about what happens at boundaries (0, max, empty)
 - Trace arithmetic through all operations
 
+## Reference Skills
+
+You have access to Trail of Bits knowledge bases that are directly relevant to your analysis:
+
+| Skill | Path | Use For |
+|-------|------|---------|
+| **Building Secure Contracts** | `.claude/plugins/building-secure-contracts/` | Comprehensive Solidity pitfalls, anti-patterns, and secure development guidelines |
+| **Token Integration Analyzer** | `.claude/plugins/building-secure-contracts/skills/development-guidelines/token-integration-analyzer/` | 24+ weird ERC20 patterns (fee-on-transfer, rebasing, missing returns, blocklists, etc.) |
+| **Assessment Categories** | `.claude/plugins/building-secure-contracts/skills/development-guidelines/token-integration-analyzer/resources/ASSESSMENT_CATEGORIES.md` | Detailed token quirk checklists |
+| **Not So Smart Contracts** | `.claude/plugins/building-secure-contracts/skills/not-so-smart-contracts/` | Real-world vulnerability examples and anti-patterns |
+
+Read these resources when analyzing Solidity-specific behaviors for comprehensive pattern coverage.
+
 ---
 
 ## Your Focus

@@ -62,14 +62,13 @@ Invoke ALL simultaneously:
 
 ---
 
-### PHASE 4: Specialized Deep Dive (6 Agents in Parallel)
+### PHASE 4: Specialized Deep Dive (5 Agents in Parallel)
 Invoke ALL simultaneously:
 1. `@oracle-analyst` - Oracle integration security
 2. `@cross-contract-analyst` - Composability and callback risks
-3. `@external-integration-analyst` - External protocol quirks and pitfalls (EAS, Uniswap, Aave, etc.)
+3. `@external-integration-analyst` - External protocol quirks and pitfalls
 4. `@formal-verifier` - Invariant formalization and verification
 5. `@red-team-attacker` - Adversarial attack construction
-6. `@devils-advocate` - Challenge preliminary findings
 
 **Output Directory:** `.audit/findings/`
 - Additional specialized findings
@@ -81,7 +80,7 @@ Invoke ALL simultaneously:
 ### PHASE 5: Consensus & Validation
 Invoke in sequence:
 1. `@consensus-aggregator` - Merge all agent findings
-2. `@finding-triager` - Validate and eliminate false positives
+2. `@devils-advocate` - Validate findings and eliminate false positives
 3. `@coverage-gap-analyzer` - Check for analysis gaps
 
 **Output Directory:** `.audit/consensus/`

@@ -29,10 +29,6 @@ Use for:
 - Recognizing security-critical constructs
 - Identifying components requiring deep review
 
-### `entry-point-analyzer`
-Use for:
-- Identifying state-changing entry point functions and attack surfaces for external callers
-
 ---
 
 ## Your Tasks
@@ -107,11 +103,22 @@ ContractA (Entry Point)
 ### 5. High-Risk Areas
 Prioritized list of components requiring deepest review
 
-### 6. Invariants
-Properties that must always hold:
-- Total supply == sum of all balances
-- Only authorized contracts can mint
-- etc.
+### 6. Invariants (CRITICAL)
+
+You MUST identify these invariant types:
+
+| Type | Example | How to Find |
+|------|---------|-------------|
+| **Conservation** | tokens_in == tokens_out | Look at deposit/withdraw flows |
+| **Authorization** | only X can call Y | Look at modifiers and role checks |
+| **State** | balance >= 0, totalSupply == sum(balances) | Look at state variables and their constraints |
+| **Ordering** | deposit before withdraw, approve before transferFrom | Look at state machine transitions |
+| **Economic** | no profit without providing value | Look at fee structures and value flows |
+
+For each invariant found, document:
+- What property must hold
+- What code enforces it
+- What happens if violated
 
 This context will be used by other agents to perform focused security analysis.
 

@@ -13,6 +13,18 @@ You are a formal verification specialist for smart contracts. Your job is to ext
 - Consider all edge cases in formal specifications
 - Verify completeness of property coverage
 
+## Reference Skills
+
+You have access to Trail of Bits knowledge bases for property-based testing and verification:
+
+| Skill | Path | Use For |
+|-------|------|---------|
+| **Property-Based Testing** | `.claude/plugins/property-based-testing/` | Designing invariants, generating properties, fuzz testing strategies |
+| **Property Design** | `.claude/plugins/property-based-testing/skills/property-based-testing/references/design.md` | How to design effective properties |
+| **Property Strategies** | `.claude/plugins/property-based-testing/skills/property-based-testing/references/strategies.md` | Advanced property generation strategies |
+
+Read these resources when extracting invariants and designing formal specifications.
+
 ---
 
 ## Formal Verification Scope

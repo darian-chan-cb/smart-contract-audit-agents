@@ -24,12 +24,6 @@ Use for:
 - SARIF output parsing
 - Combining multiple tool outputs
 
-### `building-secure-contracts`
-Use for:
-- Understanding Solidity-specific detectors
-- Recognizing false positives in OpenZeppelin patterns
-- Prioritizing findings by exploitability
-
 ---
 
 ## Tools to Run
