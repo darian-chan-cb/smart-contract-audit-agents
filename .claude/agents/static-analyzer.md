@@ -40,7 +40,7 @@ If Slither is not installed:
 pip install slither-analyzer
 ```
 
-Key Slither detectors to focus on:
+Key Slither detectors to focus on, however do not limit yourself to only these detectors:
 - `reentrancy-eth`, `reentrancy-no-eth`, `reentrancy-benign`
 - `uninitialized-state`, `uninitialized-storage`, `uninitialized-local`
 - `arbitrary-send-erc20`, `arbitrary-send-eth`
