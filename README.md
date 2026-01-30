@@ -6,13 +6,15 @@ A collection of Claude agents and Trail of Bits skills for conducting comprehens
 
 This toolkit provides a systematic approach to smart contract security auditing, combining:
 
-- **8 Specialized Agents** for different phases of security analysis
-- **10+ Trail of Bits Skills** for vulnerability detection across multiple blockchain platforms
+- **9 Specialized Agents** for different phases of security analysis
+- **20+ Trail of Bits Skills** for vulnerability detection across multiple blockchain platforms
 - **Structured Workflow** from context building to report generation
 
-## Quick Start
+---
 
-### 1. Copy to Your Project
+## Setup
+
+### Step 1: Copy to Your Project
 
 Copy the `.claude` folder to the root of your smart contract project:
 
@@ -20,29 +22,110 @@ Copy the `.claude` folder to the root of your smart contract project:
 cp -r /path/to/smart-contract-audit-agents/.claude /path/to/your-project/
 ```
 
-### 2. Install Prerequisites
+### Step 2: Create Output Directories
+
+Create the required output folders for agents to store their findings:
 
 ```bash
-# Slither (static analysis)
+mkdir -p agent-outputs/scoping
+mkdir -p agent-outputs/findings
+mkdir -p agent-outputs/triaged
+mkdir -p agent-outputs/red-team
+```
+
+**Directory purposes:**
+| Directory | Purpose | Written by |
+|-----------|---------|------------|
+| `agent-outputs/scoping/` | Architecture, context, entry points | context-builder, entry-point-mapper |
+| `agent-outputs/findings/` | Raw vulnerability findings | smart-contract-auditor, static-analyzer, access-control-reviewer, upgrade-safety-reviewer |
+| `agent-outputs/red-team/` | Adversarial attack analysis | red-team-attacker |
+| `agent-outputs/triaged/` | Validated findings after triage | finding-triager |
+
+### Step 3: Install Prerequisites
+
+```bash
+# Slither (static analysis for Solidity)
 pip install slither-analyzer
 
-# Foundry (for testing)
+# Foundry (for testing and building)
 curl -L https://foundry.paradigm.xyz | bash
 foundryup
 ```
 
-### 3. Start Your Audit
+### Step 4: Verify Setup
 
-Use the agents in this recommended order:
+Your project structure should look like:
 
-1. **context-builder** - Build deep understanding of the codebase
-2. **entry-point-mapper** - Map all attack surfaces
-3. **static-analyzer** - Run automated tools
-4. **access-control-reviewer** - Audit roles and permissions
-5. **upgrade-safety-reviewer** - Check proxy/upgrade patterns
-6. **smart-contract-auditor** - Deep manual vulnerability hunting
-7. **finding-triager** - Validate findings, eliminate false positives
-8. **report-generator** - Create professional audit report
+```
+your-project/
+├── .claude/
+│   ├── agents/           # 9 specialized audit agents
+│   ├── skills/           # 20+ Trail of Bits skills
+│   └── plugins/          # Plugin source files
+├── agent-outputs/
+│   ├── scoping/          # Context and entry point analysis
+│   ├── findings/         # Raw vulnerability findings
+│   ├── red-team/         # Adversarial analysis
+│   └── triaged/          # Validated findings
+├── src/                  # Your smart contracts
+└── test/                 # Your tests
+```
+
+---
+
+## Audit Workflow
+
+### Agent Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHASE 1: SCOPING                                   │
+│                                                                              │
+│   @context-builder ─────┬──────► agent-outputs/scoping/                     │
+│   @entry-point-mapper ──┘                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHASE 2: ANALYSIS                                  │
+│                                                                              │
+│   @static-analyzer ───────────────────────────► agent-outputs/findings/     │
+│   @access-control-reviewer ───────────────────► agent-outputs/findings/     │
+│   @upgrade-safety-reviewer ───────────────────► agent-outputs/findings/     │
+│   @smart-contract-auditor ◄── reads scoping ──► agent-outputs/findings/     │
+│   @red-team-attacker ─────────────────────────► agent-outputs/red-team/     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHASE 3: TRIAGE                                    │
+│                                                                              │
+│   @finding-triager ◄── reads findings + red-team ──► agent-outputs/triaged/ │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHASE 4: REPORTING                                 │
+│                                                                              │
+│   @report-generator ◄── reads triaged ──► SECURITY_AUDIT_REPORT.md          │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Recommended Execution Order
+
+| Order | Agent | Purpose | Reads From | Writes To |
+|-------|-------|---------|------------|-----------|
+| 1 | `@context-builder` | Build architectural understanding | Source code | `agent-outputs/scoping/` |
+| 2 | `@entry-point-mapper` | Map attack surfaces | Source code | `agent-outputs/scoping/` |
+| 3 | `@static-analyzer` | Run Slither/Semgrep | Source code | `agent-outputs/findings/` |
+| 4 | `@access-control-reviewer` | Audit roles and permissions | Source code | `agent-outputs/findings/` |
+| 5 | `@upgrade-safety-reviewer` | Check proxy patterns | Source code | `agent-outputs/findings/` |
+| 6 | `@smart-contract-auditor` | Deep vulnerability hunting | `agent-outputs/scoping/` | `agent-outputs/findings/` |
+| 7 | `@red-team-attacker` | Adversarial attack simulation | Source code | `agent-outputs/red-team/` |
+| 8 | `@finding-triager` | Validate findings | `agent-outputs/findings/`, `agent-outputs/red-team/` | `agent-outputs/triaged/` |
+| 9 | `@report-generator` | Generate audit report | `agent-outputs/triaged/` | `SECURITY_AUDIT_REPORT.md` |
+
+---
 
 ## Agents
 
@@ -54,123 +137,134 @@ Use the agents in this recommended order:
 | `access-control-reviewer` | Deep dive into RBAC and permissions | opus |
 | `upgrade-safety-reviewer` | Audit proxy patterns and storage safety | opus |
 | `smart-contract-auditor` | Manual vulnerability hunting | opus |
+| `red-team-attacker` | Adversarial attack simulation and exploitation | opus |
 | `finding-triager` | Validate findings, detect false positives | opus |
 | `report-generator` | Compile findings into professional report | opus |
+
+---
 
 ## Included Skills (Trail of Bits)
 
 ### Vulnerability Scanners
-- **Algorand** - TEAL/PyTeal vulnerability patterns
-- **Cairo** - StarkNet smart contract issues
-- **Cosmos** - Cosmos SDK module vulnerabilities
-- **Solana** - Anchor/native program issues
-- **Substrate** - Pallet security patterns
-- **TON** - FunC/Tact vulnerabilities
+| Skill | Platform | Patterns |
+|-------|----------|----------|
+| `algorand-vulnerability-scanner` | Algorand/TEAL | 11 vulnerability patterns |
+| `cairo-vulnerability-scanner` | StarkNet/Cairo | 6 vulnerability patterns |
+| `cosmos-vulnerability-scanner` | Cosmos SDK | 9 vulnerability patterns |
+| `solana-vulnerability-scanner` | Solana/Anchor | 6 vulnerability patterns |
+| `substrate-vulnerability-scanner` | Substrate/Polkadot | 7 vulnerability patterns |
+| `ton-vulnerability-scanner` | TON/FunC | 3 vulnerability patterns |
 
 ### Development Guidelines
-- **audit-prep-assistant** - Prepare for security reviews
-- **code-maturity-assessor** - Evaluate code quality
-- **guidelines-advisor** - Development best practices
-- **secure-workflow-guide** - Continuous security workflow
-- **token-integration-analyzer** - Token security analysis
+| Skill | Purpose |
+|-------|---------|
+| `audit-prep-assistant` | Prepare codebase for security reviews |
+| `code-maturity-assessor` | 9-category code maturity evaluation |
+| `guidelines-advisor` | Development best practices advisor |
+| `secure-workflow-guide` | 5-step secure development workflow |
+| `token-integration-analyzer` | Token security and weird patterns |
 
-### Other Skills
-- **entry-point-analyzer** - Systematic attack surface mapping
-- **audit-context-building** - Ultra-granular code analysis
-- **property-based-testing** - Fuzz testing guidance
-- **differential-review** - Review code changes securely
-- **static-analysis** - CodeQL and Semgrep integration
-- **variant-analysis** - Find similar vulnerabilities
+### Analysis Skills
+| Skill | Purpose |
+|-------|---------|
+| `entry-point-analyzer` | Systematic attack surface mapping |
+| `audit-context-building` | Ultra-granular code analysis methodology |
+| `property-based-testing` | Fuzz testing guidance |
+| `differential-review` | Security-focused code change review |
+| `variant-analysis` | Find similar vulnerability patterns |
+| `semgrep` | Semgrep rule application |
+| `codeql` | CodeQL query execution |
+| `sarif-parsing` | SARIF output processing |
 
-## Audit Workflow
+---
 
-### Phase 1: Context Building
-```
-Use @context-builder to:
-- Map contract inheritance
-- Identify trust boundaries
-- Document external dependencies
-- List critical invariants
-```
+## Usage Examples
 
-### Phase 2: Attack Surface Mapping
-```
-Use @entry-point-mapper to:
-- List all external/public functions
-- Categorize by access level
-- Prioritize by risk
-- Create attack surface diagram
-```
+### Running a Full Audit
 
-### Phase 3: Automated Analysis
-```
-Use @static-analyzer to:
-- Run Slither
-- Interpret findings
-- Separate true positives from false positives
-- Queue issues for manual review
-```
+```bash
+# 1. Set up your project
+cd /path/to/your-project
+cp -r /path/to/smart-contract-audit-agents/.claude .
+mkdir -p agent-outputs/{scoping,findings,triaged,red-team}
 
-### Phase 4: Specialized Reviews
-```
-Use @access-control-reviewer for:
-- Role permission matrix
-- Privilege escalation paths
-- Missing access controls
+# 2. Start Claude Code
+claude
 
-Use @upgrade-safety-reviewer for:
-- Proxy pattern analysis
-- Storage collision risks
-- Initializer safety
+# 3. Run agents in order
+> Use @context-builder to analyze the smart contracts in src/
+> Use @entry-point-mapper to map all entry points
+> Use @static-analyzer to run Slither on the codebase
+> Use @smart-contract-auditor to perform deep security analysis
+> Use @red-team-attacker to find exploitable vulnerabilities
+> Use @finding-triager to validate all findings
+> Use @report-generator to create the audit report
 ```
 
-### Phase 5: Deep Manual Review
-```
-Use @smart-contract-auditor to:
-- Hunt for vulnerabilities
-- Build attack narratives
-- Write proof-of-concept exploits
+### Running Specific Agents
+
+```bash
+# Just context building
+> Use @context-builder to analyze src/Token.sol and document the architecture
+
+# Just access control review
+> Use @access-control-reviewer to audit the role-based access control in src/
+
+# Just upgrade safety
+> Use @upgrade-safety-reviewer to check the UUPS proxy implementation
 ```
 
-### Phase 6: Finding Validation
-```
-Use @finding-triager to:
-- Verify each finding in code
-- Eliminate false positives
-- Reassess severity
-- Provide recommendations
-```
-
-### Phase 7: Report Generation
-```
-Use @report-generator to:
-- Compile all findings
-- Create executive summary
-- Generate professional report
-```
+---
 
 ## Customization
 
 ### Adding Protocol-Specific Checks
 
-Edit `smart-contract-auditor.md` to add protocol-specific vulnerability patterns:
+Edit `.claude/agents/smart-contract-auditor.md` to add protocol-specific vulnerability patterns:
 
 ```markdown
-### 10. Protocol-Specific Patterns
+### 11. Your Protocol Patterns
 For [Your Protocol]:
 - [ ] Custom check 1
 - [ ] Custom check 2
+- [ ] Custom check 3
 ```
 
 ### Adjusting Model Selection
 
-Each agent specifies its model in the frontmatter:
+Each agent specifies its model in the frontmatter. Change `opus` to `sonnet` for faster/cheaper analysis:
 
 ```yaml
 ---
-model: opus  # or sonnet for faster/cheaper analysis
+name: smart-contract-auditor
+model: sonnet  # Changed from opus
 ---
 ```
+
+### Adding New Skills
+
+Create a new skill in `.claude/skills/your-skill/SKILL.md`:
+
+```markdown
+---
+name: your-skill
+description: What this skill does
+---
+
+# Your Skill
+
+Instructions for Claude when this skill is loaded...
+```
+
+Then reference it in an agent:
+
+```markdown
+### Your Skill
+Read: `.claude/skills/your-skill/SKILL.md`
+- What it provides
+```
+
+---
 
 ## File Structure
 
@@ -181,22 +275,76 @@ model: opus  # or sonnet for faster/cheaper analysis
 │   ├── context-builder.md
 │   ├── entry-point-mapper.md
 │   ├── finding-triager.md
+│   ├── red-team-attacker.md
 │   ├── report-generator.md
 │   ├── smart-contract-auditor.md
 │   ├── static-analyzer.md
 │   └── upgrade-safety-reviewer.md
+├── skills/
+│   ├── algorand-vulnerability-scanner/
+│   ├── audit-context-building/
+│   ├── cairo-vulnerability-scanner/
+│   ├── code-maturity-assessor/
+│   ├── codeql/
+│   ├── cosmos-vulnerability-scanner/
+│   ├── differential-review/
+│   ├── entry-point-analyzer/
+│   ├── guidelines-advisor/
+│   ├── property-based-testing/
+│   ├── sarif-parsing/
+│   ├── semgrep/
+│   ├── solana-vulnerability-scanner/
+│   ├── substrate-vulnerability-scanner/
+│   ├── token-integration-analyzer/
+│   ├── ton-vulnerability-scanner/
+│   └── variant-analysis/
 └── plugins/
-    ├── ask-questions-if-underspecified/
-    ├── audit-context-building/
-    ├── building-secure-contracts/
-    ├── differential-review/
-    ├── entry-point-analyzer/
-    ├── property-based-testing/
-    ├── semgrep-rule-creator/
-    ├── sharp-edges/
-    ├── static-analysis/
-    └── variant-analysis/
+    └── ... (plugin source files)
+
+agent-outputs/
+├── scoping/      # Architecture and entry point documentation
+├── findings/     # Raw vulnerability findings
+├── red-team/     # Adversarial attack analysis
+└── triaged/      # Validated findings ready for reporting
 ```
+
+---
+
+## Troubleshooting
+
+### Slither Not Found
+
+```bash
+pip install slither-analyzer
+# or
+pip3 install slither-analyzer
+```
+
+### Foundry Not Found
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Agent Can't Find Skill Files
+
+Ensure you copied the entire `.claude` folder:
+
+```bash
+ls -la .claude/skills/
+# Should show 15+ skill directories
+```
+
+### Agent Outputs Not Being Saved
+
+Ensure output directories exist:
+
+```bash
+mkdir -p agent-outputs/{scoping,findings,triaged,red-team}
+```
+
+---
 
 ## Credits
 
@@ -207,4 +355,3 @@ model: opus  # or sonnet for faster/cheaper analysis
 ## License
 
 MIT License - Feel free to use and modify for your security audits.
-
