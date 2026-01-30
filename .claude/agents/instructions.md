@@ -11,6 +11,19 @@ You are tasked with performing a comprehensive smart contract security audit to 
 
 ---
 
+## Agent Type Mapping
+
+| Phase | Agent Type | Count | Output Files |
+|-------|------------|-------|--------------|
+| 1 | `context-builder` | 3 | `agent-outputs/scoping/scoping-agent-{1,2,3}.md` |
+| 2 | `smart-contract-auditor` | 3 | `agent-outputs/findings/auditor-{1,2,3}-findings.md` |
+| 3 | `static-analyzer` | 1 | `agent-outputs/static-analysis/slither-triage.md` |
+| 4 | `finding-triager` | N | `agent-outputs/triage/{finding-id}-triage.md` |
+| 5 | `report-generator` | 1 | `agent-outputs/final-report.md` |
+| 6 | `red-team-attacker` | 3 | `agent-outputs/red-team/red-team-{1,2,3}-findings.md` |
+
+---
+
 ## Output Directory Structure
 
 Before starting the audit, ensure the following directory structure exists:
@@ -46,10 +59,17 @@ agent-outputs/
 Build comprehensive understanding of the entire protocol. Each agent reviews **ALL contracts** independently. This ensures every line of code is analyzed 3 times with 3 different agents.
 
 ### Agent Deployment
-Deploy **3 context-builder subagents**, each analyzing the **ENTIRE protocol** independently
+- **Agent type:** `context-builder`
+- **Count:** 3 agents (run in parallel)
+- **Scope:** Each agent analyzes the ENTIRE protocol independently
 
-### Required Output Format for Each Scoping Agent
-Each agent MUST write a markdown file containing, following the format specified in `.claude/skills/audit-context-building/resources/OUTPUT_REQUIREMENTS.md`
+### Output Files
+Each agent MUST write to its designated file:
+- Agent 1 → `agent-outputs/scoping/scoping-agent-1.md`
+- Agent 2 → `agent-outputs/scoping/scoping-agent-2.md`
+- Agent 3 → `agent-outputs/scoping/scoping-agent-3.md`
+
+Output format is defined in `.claude/skills/audit-context-building/resources/OUTPUT_REQUIREMENTS.md`
 
 
 ## Phase 2: Manual Line-by-Line Analysis (3 Agents - Full Protocol Review)
@@ -62,10 +82,15 @@ Deep vulnerability hunting with every line of code analyzed 3 times by different
 - Use the high-risk areas identified in scoping to prioritize analysis
 
 ### Agent Deployment
+- **Agent type:** `smart-contract-auditor`
+- **Count:** 3 agents (run in parallel)
+- **Scope:** Each agent analyzes the ENTIRE protocol independently
 
-Deploy **3 smart-contract-auditor subagents**, each analyzing the **ENTIRE protocol** independently.
-
-**Output folder**: `agent-outputs/findings`
+### Output Files
+Each agent MUST write to its designated file:
+- Agent 1 → `agent-outputs/findings/auditor-1-findings.md`
+- Agent 2 → `agent-outputs/findings/auditor-2-findings.md`
+- Agent 3 → `agent-outputs/findings/auditor-3-findings.md`
 
 ---
 
@@ -75,14 +100,16 @@ Deploy **3 smart-contract-auditor subagents**, each analyzing the **ENTIRE proto
 Run automated tools to catch issues humans might miss.
 
 ### Agent Deployment
+- **Agent type:** `static-analyzer`
+- **Count:** 1 agent
+- **Tasks:**
+  1. Run Slither on the entire protocol
+  2. Parse and categorize all findings
+  3. Cross-reference with manual audit findings to identify new issues
+  4. Triage each finding as: True Positive, False Positive, or Already Found
 
-Deploy **1 static-analyzer subagent** to:
-1. Run Slither on the entire protocol
-2. Parse and categorize all findings
-3. Cross-reference with manual audit findings to identify new issues
-4. Triage each finding as: True Positive, False Positive, or Already Found
-
-**Output file**: `agent-outputs/static-analysis/slither-triage.md`
+### Output Files
+- `agent-outputs/static-analysis/slither-triage.md`
 
 ---
 
@@ -98,25 +125,18 @@ Validate all findings to eliminate false positives and confirm true positives.
 - Deduplicate findings that multiple auditors found
 
 ### Agent Deployment
+- **Agent type:** `finding-triager`
+- **Count:** Variable (1 per Critical/High/Medium finding, 1 for all Low, 1 for all Informational)
+- **Tasks:**
+  - Verify the vulnerability exists in the code
+  - Confirm the impact assessment is accurate
+  - Attempt to find mitigating factors
+  - Provide final verdict: Valid, Invalid, or Severity Adjustment
 
-#### For Critical, High, and Medium Findings:
-Deploy **1 finding-triager subagent PER finding** to:
-- Verify the vulnerability exists in the code
-- Confirm the impact assessment is accurate
-- Attempt to find mitigating factors
-- Provide final verdict: Valid, Invalid, or Severity Adjustment
-
-**Output files**: `agent-outputs/triage/critical-high-medium/[finding-id]-triage.md`
-
-#### For Low Findings:
-Deploy **1 finding-triager subagent** to batch triage all Low findings
-
-**Output file**: `agent-outputs/triage/low-triage.md`
-
-#### For Informational Findings:
-Deploy **1 finding-triager subagent** to batch triage all Informational findings
-
-**Output file**: `agent-outputs/triage/informational-triage.md`
+### Output Files
+- Critical/High/Medium findings: `agent-outputs/triage/critical-high-medium/{finding-id}-triage.md`
+- Low findings (batched): `agent-outputs/triage/low-triage.md`
+- Informational findings (batched): `agent-outputs/triage/informational-triage.md`
 
 ---
 
@@ -130,16 +150,18 @@ Compile all validated findings into a professional audit report.
 - Only include findings marked as Valid
 
 ### Agent Deployment
+- **Agent type:** `report-generator`
+- **Count:** 1 agent
+- **Tasks:** Create the final report containing:
+  1. Executive Summary
+  2. Scope and Methodology
+  3. Findings Summary Table
+  4. Detailed Findings (sorted by severity)
+  5. Recommendations
+  6. Appendix (files reviewed, tools used)
 
-Deploy **1 report-generator subagent** to create the final report containing:
-1. Executive Summary
-2. Scope and Methodology
-3. Findings Summary Table
-4. Detailed Findings (sorted by severity)
-5. Recommendations
-6. Appendix (files reviewed, tools used)
-
-**Output file**: `agent-outputs/final-report.md`
+### Output Files
+- `agent-outputs/final-report.md`
 
 ---
 
@@ -153,8 +175,15 @@ Final adversarial review to catch anything the audit missed.
 - Agents should try to find vulnerabilities NOT already in the report
 
 ### Agent Deployment
+- **Agent type:** `red-team-attacker`
+- **Count:** 3 agents (run in parallel)
+- **Scope:** Each agent independently attacks the protocol
 
-Deploy **3 red-team-attacker subagents**, to independently attack the protocol:
+### Output Files
+Each agent MUST write to its designated file:
+- Agent 1 → `agent-outputs/red-team/red-team-1-findings.md`
+- Agent 2 → `agent-outputs/red-team/red-team-2-findings.md`
+- Agent 3 → `agent-outputs/red-team/red-team-3-findings.md`
 
 ### Required Output Format
 
